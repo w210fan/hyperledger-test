@@ -64,7 +64,6 @@ rule BankValidate {
     participant: "org.acme.model.Bank"
     operation: READ
     resource: "org.acme.model.Account"
-    transaction(tx): "org.acme.model.Buy"
     action: ALLOW
 }
 /** Банк
@@ -75,7 +74,6 @@ rule BankProcessTransactionAccounts {
     participant: "org.acme.model.Bank"
     operation: UPDATE
     resource: "org.acme.model.Account"
-    transaction(tx): "org.acme.model.Buy"
     action: ALLOW
 }
 /** Банк
@@ -86,7 +84,6 @@ rule BankProcessTransactionProduct {
     participant: "org.acme.model.Bank"
     operation: UPDATE
     resource: "org.acme.model.Product"
-    transaction(tx): "org.acme.model.Buy"
     action: ALLOW
 }
 

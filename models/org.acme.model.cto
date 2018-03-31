@@ -8,11 +8,11 @@ asset Product identified by productId {
     --> Person owner
     o Boolean isOnSale default = false
     o Boolean isBlocked default = false
-    o Double price default = 0
+    o Double price default = 0.0
 }
 asset Account identified by accountId {
     o String accountId
-    o Double balans default = 0
+    o Double balans default = 0.0
     --> Bank bank
     --> Person owner
 }
