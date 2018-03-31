@@ -1,0 +1,46 @@
+/**
+ * New model file
+ */
+
+namespace org.acme.model
+asset Product identified by productId {
+    o String productId
+    --> Person owner
+}
+asset ProductOnSale extends Product {
+    o Double price
+    o Boolean blocked
+}
+asset Requests identified by requestId {
+    o String requestId
+    --> ProductOnSale product
+    o Person buyer
+}
+asset Account identified by accountId {
+    o String accountId
+    o Double balans
+    --> Bank bank
+    --> Person owner
+}
+
+enum PersonType {
+  o Seller
+  o Buyer
+}
+participant Person identified by name {
+    o String name
+    o PersonType type
+}
+participant Bank identified by bankId {
+    o String bankId
+}
+
+transaction SetProductOnSale {
+    --> Product product
+    o Double price
+}
+
+transaction Buy {
+  --> ProductOnSale product
+  --> Person buyer
+}
