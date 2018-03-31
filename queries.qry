@@ -1,0 +1,7 @@
+
+query selectAccount {
+  description: "select account by owner"
+  statement:
+    SELECT org.acme.model.Account
+        WHERE (owner == _$owner)
+}

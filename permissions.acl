@@ -1,64 +1,105 @@
 /** Продавец
         - Определяет список товаров на продажу **/
-rule SellerSetSaleList {
-    description: "Seller have full access to the Product on sale list"
+rule SellerSetProductToSale {
+    description: "Продавец Определяет список товаров на продажу"
     participant(p): "org.acme.model.Person"
     operation: ALL
-    resource: "org.acme.model.ProductOnSale"
-    condition: (p.type === Seller)
+    resource(r): "org.acme.model.Product"
+    transaction(tx): "org.acme.model.setProductToSale"
+    condition: (p.type == Buyer)
     action: ALLOW
 }
 /** Продавец
         - Видит проданные/непроданные товары **/
 rule SellerSeeNotSoldProducts {
-    description: "Seller can see not sold products"
-    participant(i): "org.acme.model.Person"
+    description: "Продавец Видит проданные/непроданные товары"
+    participant(p): "org.acme.model.Person"
     operation: READ
-    resource(a): "org.acme.model.ProductOnSale"
-    condition: (i.type === Seller)
-    action: ALLOW
-}
-rule SellerSeeSoldProducts {
-  description: "Seller can see sold products"
-    participant(i): "org.acme.model.Person"
-    operation: READ
-    resource(r): "org.acme.model.ProductRequested"
-    condition: (i.type === Seller && i)
+    resource: "org.acme.model.Product"
+    condition: (p.type == Seller)
     action: ALLOW
 }
 /** Продавец и Покупатель 
     - могут просматривать баланс своего счета **/
 rule OwnAccount {
-    description: "Person allow to read balans of own account"
+    description: "Может просматривать баланс своего счета"
     participant(p): "org.acme.model.Person"
     operation: READ
     resource(r): "org.acme.model.Account"
-    condition: (p.name === r.owner.name)
+    condition: (p == r.owner)
     action: ALLOW
 }
 /** Покупатель
         - Видит список выставленных на продажу товаров **/
-rule BuyerOnSale {
-    description: "Buyer have read access to the Product on sale list"
+rule BuyerSeeProductOnSale {
+    description: "Покупатель Видит список выставленных на продажу товаров"
     participant(p): "org.acme.model.Person"
     operation: READ
-    resource(r): "org.acme.model.ProductOnSale"
-    condition: (p.type === 'BUYER' && r.blocked === false)
+    resource(r): "org.acme.model.Product"
+    condition: (p.type == 'Buyer' && r.isOnSale == true && r.isBlocked == false)
     action: ALLOW
 }
+
 
 /** Покупатель
         - Выбирает товар и покупает
                 - Отправляет запрос на блокировку товара
                 - Делает запрос в банк **/
-rule Buy {
-    description: "Buyer make request"
+rule BuyerBlockProduct {
+    description: "Отправляет запрос на блокировку товара"
     participant(p): "org.acme.model.Person"
-    operation: CREATE
-    resource: "org.acme.model.Requests"
-    condition: (p.type === 'Buyer')
+    operation: UPDATE
+    resource(r): "org.acme.model.Product"
+    transaction(tx): "org.acme.model.Buy"
+    condition: (p.type == 'Buyer' && r.isBlocked == false)
     action: ALLOW
 }
+
+/** Банк
+        - Валидирует запросы от покупателя на покупку товара
+            - Проверяет достаточность баланса
+            - Проверят валидность блокировки товара **/
+rule BankValidate {
+    description: "Банк -Валидирует запросы от покупателя на покупку товара -Проверяет достаточность баланса"
+    participant: "org.acme.model.Bank"
+    operation: READ
+    resource: "org.acme.model.Account"
+    transaction(tx): "org.acme.model.Buy"
+    action: ALLOW
+}
+/** Банк
+    - Проводит транзакцию:
+        - Переводит деньги со счета покупателя на счет продавца **/
+rule BankProcessTransactionAccounts {
+    description: "Банк -Проводит транзакцию: -Переводит деньги со счета покупателя на счет продавца"
+    participant: "org.acme.model.Bank"
+    operation: UPDATE
+    resource: "org.acme.model.Account"
+    transaction(tx): "org.acme.model.Buy"
+    action: ALLOW
+}
+/** Банк
+    - Проводит транзакцию:
+        - Обновляет владельца товара **/
+rule BankProcessTransactionProduct {
+    description: "Банк -Проводит транзакцию: -Обновляет владельца товара"
+    participant: "org.acme.model.Bank"
+    operation: UPDATE
+    resource: "org.acme.model.Product"
+    transaction(tx): "org.acme.model.Buy"
+    action: ALLOW
+}
+
+/** - Банк
+        - Видит детали счетов клиентов **/
+rule BankSeeAllAccounts {
+    description: "Видит детали счетов клиентов"
+    participant: "org.acme.model.Bank"
+    operation: READ
+    resource: "org.acme.model.Account"
+    action: ALLOW
+}
+
 
 rule NetworkAdminUser {
     description: "Grant business network administrators full access to user resources"

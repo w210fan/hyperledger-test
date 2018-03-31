@@ -6,19 +6,13 @@ namespace org.acme.model
 asset Product identified by productId {
     o String productId
     --> Person owner
-}
-asset ProductOnSale extends Product {
-    o Double price
-    o Boolean blocked
-}
-asset Requests identified by requestId {
-    o String requestId
-    --> ProductOnSale product
-    o Person buyer
+    o Boolean isOnSale default = false
+    o Boolean isBlocked default = false
+    o Double price default = 0
 }
 asset Account identified by accountId {
     o String accountId
-    o Double balans
+    o Double balans default = 0
     --> Bank bank
     --> Person owner
 }
@@ -35,12 +29,10 @@ participant Bank identified by bankId {
     o String bankId
 }
 
-transaction SetProductOnSale {
-    --> Product product
-    o Double price
+transaction setProductToSale {
+  --> Product product
 }
-
 transaction Buy {
-  --> ProductOnSale product
-  --> Person buyer
+  --> Product product
+  --> Person newowner
 }
