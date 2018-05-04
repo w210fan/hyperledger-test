@@ -1,0 +1,60 @@
+{
+    "name": "hlfv1",
+    "description": "hlfv1",
+    "type": "hlfv1",
+    "x-type": "hlfv1",
+    "client": {
+        "organization": "Org1",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300",
+                    "eventHub": "300",
+                    "eventReg": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "orderers": {
+        "orderer": {
+            "url": "grpc://localhost:7050"
+        }
+    },
+    "ca": {
+        "url": "http://localhost:7054",
+        "name": "PeerOrg1CA"
+    },
+    "peers": {
+        "peer0.org1": {
+            "url": "grpc://localhost:7051",
+            "eventUrl": "grpc://localhost:7053"
+        }
+    },
+    "certificateAuthorities": {
+        "ca.org1.example.com": {
+            "url": "http://localhost:7054",
+            "caName": "ca"
+        }
+    },
+    "channels": {
+        "composerchannel": {
+            "orderers": [
+                "orderer"
+            ],
+            "peers": {
+                "peer0.org1.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "ledgerQuery": true,
+                    "eventSource": true
+                }
+            }
+        }
+    },
+    "keyValStore": "./composer-credentials-mychannel-hsbn",
+    "channel": "composerchannel",
+    "mspID": "PeerOrg1",
+    "globalCert": "-----BEGIN CERTIFICATE-----\r\n...LotsOfStuff\r\n-----END CERTIFICATE-----\r\n-----BEGIN CERTIFICATE-----\r\nMorestuff\r\n-----END CERTIFICATE-----\r\n",
+    "timeout": 300
+}
