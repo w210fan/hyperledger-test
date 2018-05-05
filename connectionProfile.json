@@ -3,6 +3,7 @@
     "description": "hlfv1",
     "type": "hlfv1",
     "x-type": "hlfv1",
+    "version": "1.0.0",
     "client": {
         "organization": "Org1",
         "connection": {
