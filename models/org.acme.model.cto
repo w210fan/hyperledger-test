@@ -3,6 +3,7 @@
  */
 
 namespace org.acme.model
+
 asset Product identified by productId {
     o String productId
     --> Person owner

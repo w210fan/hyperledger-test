@@ -1,4 +1,4 @@
-rm network@0.0.1.bna
+# rm network@0.0.1.bna
 rm networkadmin.card
 rm Seller@network.card
 
@@ -28,5 +28,3 @@ composer identity issue -u Seller -a org.acme.model.Person#Seller -c admin@netwo
 #composer identity issue -u Buyer -a org.acme.model.Person#Buyer -c admin@network
 #composer card import -f Buyer\@network.card 
 
-# Start node app
-node index.js
